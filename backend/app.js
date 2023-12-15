@@ -3,27 +3,28 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-
+const productRouter = require("./routers/product_router");
+const categoryRouter = require("./routers/category_router");
+const orderRouter = require("./routers/order_router");
+const userRouter = require("./routers/user_router");
+const cors = require("cors");
 const api_url = process.env.API_URL;
+
+/// Middlewares
+app.use(cors());
+app.options("*", cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 
-app.get(`${api_url}/products`, (req, res) => {
-  const product = {
-    id: 1,
-    name: "Beauty",
-    image: "some_url",
-  };
-  res.send(product);
-});
+///Routes
+app.use(`${api_url}/products`, productRouter);
+app.use(`${api_url}/category`, categoryRouter);
+app.use(`${api_url}/order`, orderRouter);
+app.use(`${api_url}/user`, userRouter);
 
-app.post(`${api_url}/products`, (req, res) => {
-  const t = req.body;
-  res.send(t);
-});
-
+///Mongo db connection
 mongoose
-  .connect(process.env.CONNECTION_STRING, { dbName: "ehop-database" })
+  .connect(process.env.CONNECTION_STRING, { dbName: process.env.DB_NAME })
   .then(() => {
     console.log("Database connection is ready");
   })
