@@ -32,7 +32,7 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       data: { message: "There seems to be a problem please try again later" },
-      success: true,
+      success: false,
     });
   }
 });
