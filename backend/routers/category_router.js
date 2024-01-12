@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Category = require("../models/category");
+const mongoose = require("mongoose");
 
 router.get("/", async (req, res) => {
   const category = await Category.find();
@@ -59,9 +60,12 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).send("The category cannot be updated");
+    }
     let category = await Category.findByIdAndUpdate(req.params.id, {
       name: req.body.name,
-      icon: req.body.icon,
+      icon: req.body.icon || category.icon,
       color: req.body.color,
     });
     if (!category) {
@@ -69,7 +73,7 @@ router.put("/:id", async (req, res) => {
     }
     return res.send({
       message: "Category updated successfully",
-      success: false,
+      success: true,
     });
   } catch (err) {
     console.log(err);
