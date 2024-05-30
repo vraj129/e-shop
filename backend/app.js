@@ -8,6 +8,8 @@ const categoryRouter = require("./routers/category_router");
 const orderRouter = require("./routers/order_router");
 const userRouter = require("./routers/user_router");
 const cors = require("cors");
+const authJwt = require("./helpers/jwt");
+const errorHandler = require("./helpers/error-handler");
 const api_url = process.env.API_URL;
 
 /// Middlewares
@@ -15,6 +17,8 @@ app.use(cors());
 app.options("*", cors());
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(authJwt());
+app.use(errorHandler);
 
 ///Routes
 app.use(`${api_url}/products`, productRouter);
