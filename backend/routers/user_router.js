@@ -126,4 +126,48 @@ router.post("/register", async (req, res) => {
   res.send(user);
 });
 
+router.get("/get/count", async (req, res) => {
+  User.countDocuments()
+    .then((count) => {
+      if (!count) {
+        res.status(500).json({ success: false });
+      } else {
+        return res.send({
+          success: true,
+          data: count,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return res
+        .status(400)
+        .json({ message: "Error doing operation", success: false });
+    });
+});
+
+router.delete("/:id", async (req, res) => {
+  const userId = req.params.id;
+  User.findByIdAndDelete(userId)
+    .then((value) => {
+      if (value) {
+        return res.send({
+          success: true,
+          message: "The User is deleted successfully",
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "User not found!",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return res
+        .status(400)
+        .json({ message: "Error doing operation", success: false });
+    });
+});
+
 module.exports = router;
